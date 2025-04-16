@@ -1,0 +1,29 @@
+name: CloudSim VM Allocation Policy Comparison
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Compile CloudSim simulation
+        run: |
+          mkdir -p out
+          javac -cp "libs/cloudsim-3.0.3.jar" -d out src/main/java/org/cloudsim/*.java
+
+      - name: Run CloudSim VM Allocation Comparison
+        run: |
+          java -cp "libs/cloudsim-3.0.3.jar:out" org.cloudsim.VMAllocationPolicyComparison
